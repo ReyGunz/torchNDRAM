@@ -2,3 +2,4 @@
 *.txt
 *.mod
 *test*.py
+helper.py
