@@ -3,3 +3,4 @@
 *.mod
 *test*.py
 helper.py
+__pycache__/
