@@ -1,0 +1,4 @@
+*.model
+*.txt
+*.mod
+*test*.py
