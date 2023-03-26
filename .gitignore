@@ -2,5 +2,5 @@
 *.txt
 *.mod
 *test*.py
-helper.py
+*helper*.py
 __pycache__/
