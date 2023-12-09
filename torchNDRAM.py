@@ -1,9 +1,10 @@
 import torch
-print(('not using gpu', 'using gpu')[torch.cuda.is_available()])
 from tqdm import tqdm
 import numpy as np
 import time
 import pickle
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 ## proposed in NDRAM paper (Chartier, S.; 2005), kept constant
 h = 197e-5
@@ -21,7 +22,7 @@ def cos_sim(v1, v2):
 
 ## get an empty weight matrix
 def initial_weights(n: int):
-    return torch.zeros([n,n])
+    return torch.zeros([n, n], device=device)
 
 ## transmit stimuli n times, according to activation and weight matrix
 def transmission_n(W, x0, n):
@@ -32,6 +33,7 @@ def transmission_n(W, x0, n):
 
 ## update weight matrix
 def learn(W, x0_op, xt):
+    # Hebbian update rule
     W += h * (x0_op - torch.outer(xt, xt))
     return W
 
@@ -45,12 +47,18 @@ def transmit_and_learn(W, x0, x1, n, x0_op):
 
 class AutoNDRAMTrain:
     def __init__(self):
+        # weight matrix
         self.W = None
+
+        # transmit factor
         self.tf = None
 
     def fit(self, stimuli_in, cos_thresh=0.99, transmit_factor=1):
-        stimuli = [torch.Tensor(s) for s in stimuli_in]
+        # convert stimuli to tensors
+        stimuli = [torch.Tensor(s).to(device) for s in stimuli_in]
         n_stimuli = len(stimuli)
+
+        # cache outer products for fast calculation
         x0_ops = [torch.outer(s, s) for s in stimuli]
         self.W = initial_weights(len(stimuli_in[0]))
         self.tf = transmit_factor
@@ -60,6 +68,7 @@ class AutoNDRAMTrain:
         elapsed = 0
         while(avg_cos < cos_thresh or np.isnan(avg_cos)):
             cos = 0
+            # usuing cosine similarity, but can use eigenvalue or something else
             c_desc = "{fcount}:, cosine similarity: {favg_cos:.4f}, elapsed: {felapsed:.2f} seconds".format(fcount=count, favg_cos=avg_cos, felapsed=elapsed)
             for i in tqdm(range(n_stimuli), desc=c_desc):
                 start = time.time()
@@ -67,32 +76,14 @@ class AutoNDRAMTrain:
                 elapsed += (time.time() - start)
             count += 1
             avg_cos = cos / n_stimuli
-        # self.W = torch.nn.functional.normalize(self.W, dim = 1)
-    
-    # # # ## get nearest weight by cosine similarity
-    # # # def nearest_weight(self, stimulus):
-    # # #     return self.nearest_weights(stimulus, 1)[0]
 
-    # # # ## get nearest n weight by cosine similarity
-    # # # def nearest_weights(self, stimulus, n):
-    # # #     res = self.predict(torch.Tensor(stimulus))
-    # # #     dist_list = [[i, r] for i, r in enumerate(res)]
-    # # #     dist_list = sorted(dist_list, key=lambda x: x[1], reverse=True)[:n]
-    # # #     return [i[0] for i in dist_list]
-
-    # # # ## get weights above random threshold (1 / n_labels), by cosine similarity
-    # # # def nearest_weights_thresh(self, stimulus, n_labels):
-    # # #     thresh = 1 / 768
-    # # #     res = self.predict(torch.Tensor(stimulus))
-    # # #     dist_list = [[i, r] for i, r in enumerate(res) if r > thresh]
-    # # #     dist_list = sorted(dist_list, key=lambda x: x[1], reverse=True)
-    # # #     return [i[0] for i in dist_list]
-
+    # pickle-save model
     def save(self, filepath):
         filehandler = open(filepath, 'wb')
         pickle.dump(self.__dict__, filehandler, 2)
         filehandler.close()
 
+    # pickle-load model
     def load(self, filepath):
         f = open(filepath, 'rb')
         tmp_dict = pickle.load(f)
@@ -112,7 +103,7 @@ class AutoNDRAMTest:
 
     ## activate and transmit of test stimuli for prediction
     def predict(self, stimulus):
-        y = transmission_n(self.W, torch.Tensor(stimulus), self.tf)
+        y = transmission_n(self.W, torch.Tensor(stimulus).to(device), self.tf)
         return y, int(torch.argmax(y))
     
 class AutoNDRAM:
