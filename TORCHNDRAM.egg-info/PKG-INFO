@@ -1,0 +1,22 @@
+Metadata-Version: 2.1
+Name: TORCHNDRAM
+Version: 0.1
+Summary: PYTORCH IMPLEMENATION OF CHARTIER'S AND PROULX'S NDRAM
+Home-page: https://github.com/ReyGunz/torchNDRAM
+Download-URL: https://github.com/ReyGunz/torchNDRAM/archive/refs/tags/init.tar.gz
+Author: REY A. GONZALEZ
+Author-email: gonza736@purdue.edu
+License: MIT
+Keywords: NDRAM,ASSOCIATIVE,HEBBIAN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
