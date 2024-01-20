@@ -105,7 +105,8 @@ class AutoNDRAMTest:
     ## activate and transmit of test stimuli for prediction
     def predict(self, stimulus):
         y = transmission_n(self.W, torch.Tensor(stimulus).to(device), self.tf)
-        return y, int(torch.argmax(y))
+        # return y, int(torch.argmax(y))
+        return y
     
 class AutoNDRAM:
     def __init__(self):
