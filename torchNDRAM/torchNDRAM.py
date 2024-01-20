@@ -18,7 +18,8 @@ def ndram_activation(x):
 
 ## cosine similarity for error
 def cos_sim(v1, v2):
-    return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
+    # return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
+    return torch.dot(v1, v2) / (torch.linalg.norm(v1) * torch.linalg.norm(v2))
 
 ## get an empty weight matrix
 def initial_weights(n: int):
