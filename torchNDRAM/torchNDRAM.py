@@ -116,7 +116,7 @@ class AutoNDRAM:
         self.W = None
         self.tf = None
 
-    def fit(self, stimuli_in, cos_thresh=0.99, transmit_factor=1):
+    def fit(self, stimuli_in, cos_thresh=0.999, transmit_factor=1):
         self.train.fit(stimuli_in=stimuli_in, cos_thresh=cos_thresh, transmit_factor=transmit_factor)
         self.W = self.train.W
         self.tf = self.train.tf
