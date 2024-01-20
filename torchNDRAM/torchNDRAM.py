@@ -67,7 +67,7 @@ class AutoNDRAMTrain:
         avg_cos = 0
         count = 0
         elapsed = 0
-        while(avg_cos < cos_thresh or np.isnan(avg_cos)):
+        while(avg_cos < cos_thresh or torch.isnan(avg_cos)):
             cos = 0
             # usuing cosine similarity, but can use eigenvalue or something else
             c_desc = "{fcount}:, cosine similarity: {favg_cos:.4f}, elapsed: {felapsed:.2f} seconds".format(fcount=count, favg_cos=avg_cos, felapsed=elapsed)
